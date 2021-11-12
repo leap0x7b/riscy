@@ -11,8 +11,8 @@
  *
  * and then add these functions in your code:
  *
- *     uint8_t rv_read_mem(uint64_t mem);
- *     void rv_write_mem(uint64_t mem);
+ *     uint8_t rv_read_mem(uint64_t address);
+ *     void rv_write_mem(uint64_t address, uint8_t value);
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ void rv_cpu_reset(riscv_t *cpu, int ram_size) {
     cpu->regs[0] = 0;
     cpu->regs[1] = 32;
     cpu->regs[2] = ram_size;
-} // rv_cpu_reset
+} 
 
 uint32_t rv_fetch(riscv_t *cpu) {
     uint64_t index = cpu->pc;
@@ -50,28 +50,28 @@ uint32_t rv_fetch(riscv_t *cpu) {
            rv_read_mem(index + 1) << 8 |
            rv_read_mem(index + 2) << 16 |
            rv_read_mem(index + 3) << 24;
-} // rv_fetch
+}
 
 void rv_execute(riscv_t *cpu, uint32_t inst) {
     uint32_t opcode = inst & 0x7f;
     size_t rd = ((inst >> 7) & 0x1f);
     size_t rs1 = ((inst >> 15) & 0x1f);
     size_t rs2 = ((inst >> 20) & 0x1f);
-    printf("%x %x\n", inst, opcode);
 
     switch (opcode) {
+        case 0x00: break; // null
         case 0x13: { // addi
             uint64_t imm = ((int64_t)(int32_t)(inst & 0xfff00000) >> 20);
             cpu->regs[rd] = cpu->regs[rs1] + imm;
-            return;
+            break;
         }
         case 0x33: { // add
             cpu->regs[rd] = cpu->regs[rs1] + cpu->regs[rs2];
-            return;
+            break;
         }
         default: printf("warning: instruction not implemented: 0x%02x\n", opcode);
     }
-} // rv_execute
+}
 
 void rv_run(riscv_t *cpu, int cycle) {
     cpu->cycle = cycle;
@@ -82,10 +82,10 @@ void rv_run(riscv_t *cpu, int cycle) {
         cpu->ticks++;
         if (cycle < cpu->regs[2]) break;
     }
-} // rv_run
+}
 
 void rv_dump(riscv_t *cpu) {
-    for (int i = 32; i < cpu->ticks; i += 4) {
+    for (int i = 0; i < cpu->ticks; i += 4) {
         printf(
             "x%02d=0x%01x x%02d=0x%01x x%02d=0x%01x x%02d=0x%01x\n",
             i,
@@ -98,7 +98,7 @@ void rv_dump(riscv_t *cpu) {
             cpu->regs[i + 3]
         );
     }
-} // rv_dump
+}
 
 #ifdef __cplusplus
 } // extern "C"

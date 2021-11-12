@@ -50,13 +50,13 @@ void rv_execute(riscv_t *cpu, uint32_t inst);
 void rv_run(riscv_t *cpu, int cycle);
 #ifdef RISCY_DEBUG
 void rv_dump(riscv_t *cpu);
-#endif
+#endif // RISCY_DEBUG
 
 // You need define these yourself.
 uint8_t rv_read_mem(uint64_t address);
 void rv_write_mem(uint64_t address, uint8_t value);
 
-#endif // #ifdef RISCY_IMPLEMENTATION
+#endif // RISCY_IMPLEMENTATION
 
 #ifdef __cplusplus
 } // extern "C"
