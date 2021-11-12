@@ -73,8 +73,19 @@ void rv_execute(riscv_t *cpu, uint32_t inst) {
     }
 } // rv_execute
 
+void rv_run(riscv_t *cpu, int cycle) {
+    cpu->cycle = cycle;
+    while (cpu->pc < cycle) {
+        uint32_t inst = rv_fetch(cpu);
+        cpu->pc += 4;
+        rv_execute(cpu, inst);
+        cpu->ticks++;
+        if (cycle < cpu->regs[2]) break;
+    }
+} // rv_run
+
 void rv_dump(riscv_t *cpu) {
-    for (int i = 0; i < cpu->pc; i += 4) {
+    for (int i = 32; i < cpu->ticks; i += 4) {
         printf(
             "x%02d=0x%01x x%02d=0x%01x x%02d=0x%01x x%02d=0x%01x\n",
             i,

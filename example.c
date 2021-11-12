@@ -47,10 +47,6 @@ void rv_write_mem(uint64_t address, uint8_t value) {
 }
 
 int main(int argc, char **argv) {
-    printf("%d\n", argc);
-    for (int i = 0; i < argc; i++)
-        printf("%d %s\n", i, argv[i]);
-
     if (argc < 2) {
         printf("usage: emu <filename>\n");
         return 1;
@@ -71,11 +67,7 @@ int main(int argc, char **argv) {
     fread(ram, sizeof(uint8_t), fsize, f);
     fclose(f);
 
-    while (cpu.pc < fsize) {
-        uint32_t inst = rv_fetch(&cpu);
-        cpu.pc += 4;
-        rv_execute(&cpu, inst);
-    }
+    rv_run(&cpu, 100);
     rv_dump(&cpu);
 
     return 0;

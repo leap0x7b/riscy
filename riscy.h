@@ -40,11 +40,14 @@ extern "C" {
 typedef struct riscv {
     uint32_t *regs;
     uint64_t pc;
+    int cycle;
+    int ticks;
 } riscv_t;
 
 void rv_cpu_reset(riscv_t *cpu, int ram_size);
 uint32_t rv_fetch(riscv_t *cpu);
 void rv_execute(riscv_t *cpu, uint32_t inst);
+void rv_run(riscv_t *cpu, int cycle);
 #ifdef RISCY_DEBUG
 void rv_dump(riscv_t *cpu);
 #endif
